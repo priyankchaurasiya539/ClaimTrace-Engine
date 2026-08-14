@@ -2,7 +2,7 @@ import requests
 import streamlit as st
 import threading
 import uvicorn
-from fastapi_app import app as fastapi_app  # your FastAPI app object
+from FastAPI import app as fastapi_app  # your FastAPI app object
 
 def run_fastapi():
     uvicorn.run(fastapi_app, host="127.0.0.1", port=8000, log_level="warning")
