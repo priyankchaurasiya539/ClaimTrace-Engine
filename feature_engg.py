@@ -7,20 +7,20 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 #Load the dataset 
 df = pd.read_csv("data/warranty.csv")
-# print(df)
+print(df)
 
 #Check columns
-# print(df.columns)
+print(df.columns)
 
 #Check the missing data 
 
 #Fill the missing values data
 df["operating_hours"] = df["operating_hours"].fillna(df["operating_hours"].median())
 df["last_service_days_ago"] = df["last_service_days_ago"].fillna(df["last_service_days_ago"].median())
-# print(df.isnull().sum())
+print(df.isnull().sum())
 
 #Info
-# print(df.info())
+print(df.info())
 
 
 #Now split the data 
@@ -74,5 +74,8 @@ np.save("data/X_train_final.npy", X_train_final)
 np.save("data/X_test_final.npy", X_test_final)
 np.save("data/y_train.npy", y_train.values)
 np.save("data/y_test.npy", y_test.values)
+feature_columns = list(X_train.columns)  # Replace X_train_df with your final training DataFrame variable
+joblib.dump(feature_columns, "models/feature_columns.joblib")
+print("Saved feature columns successfully!")
 
 print("All the files saved successfully.")
