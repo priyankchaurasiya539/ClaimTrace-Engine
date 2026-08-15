@@ -1,25 +1,62 @@
-# 🛡️ ClaimTrace Engine: Hybrid Warranty Fraud & Anomaly Audit System
+# 🛡️ ClaimTrace Engine: Smart Warranty Fraud Detection
 
-ClaimTrace Engine is an enterprise-grade automotive warranty audit platform powered by **FastAPI**, **Streamlit**, and **Scikit-Learn**. It integrates supervised probability calibration with unsupervised structural outlier detection to evaluate repair claims in real time.
-
----
-
-### 🇮🇳 Daily Life Analogy: Highway Toll Plaza Multi-Check Barrier
-Is system ko **National Highway FASTag & Automatic Weighbridge** ki tarah samjho:
-* **FASTag Camera (`CalibratedClassifierCV`):** Claim history, dealer type, aur mechanic logs scan karke smooth probability score ($0\%$ to $100\%$) assign karta hai.
-* **Overload Weighbridge (`IsolationForest`):** Physical numeric dimensions (Claim Amount, Mileage, Vehicle Age, Parts Count) ko evaluate karke baseline outlier audit karta hai.
-* **Harmonized Boom Barrier:** Dono pipelines ko synchronize karke ek unambiguous decision (`GENUINE`, `SUSPICIOUS`, ya `FRAUD`) deliver karta hai.
+ClaimTrace Engine is a tool built with **FastAPI**, **Streamlit**, and **Scikit-Learn** to check vehicle warranty repair claims and find fraudulent or abnormal requests quickly and accurately.
 
 ---
 
-## 📌 Problem Solved
-
-Traditional warranty verification systems suffer from two core failure modes:
-1. **Model Probability Saturation:** Unregularized classifiers collapse into extreme $0.00\%$ or $100.00\%$ predictions, eliminating nuanced risk assessment for borderline cases.
-2. **Curse of Dimensionality in Anomaly Detection:** Feeding sparse TF-IDF text features into Isolation Forests dilutes distance metrics, causing severe outliers to slip through as normal patterns.
-
-ClaimTrace eliminates these issues through **Sigmoid-calibrated soft-margins**, **isolated numeric anomaly trees**, and a **centralized 3-tier ensemble decision matrix**.
+### 🇮🇳 Simple Analogy: Toll Plaza Checkpost
+Think of this project like a **Highway Toll Plaza**:
+* **FASTag Scanner (Classifier):** Checks the dealer, repair history, and mechanic notes to give an exact fraud risk percentage from 0% to 100%.
+* **Weighbridge (Isolation Forest):** Checks the physical numbers (claim amount, mileage, vehicle age, and parts count) to see if something looks unusual or out of place.
+* **Toll Gate Barrier:** Combines both checks together to give a clear, single result: **Genuine**, **Suspicious**, or **Fraud**.
 
 ---
 
-## 🏗️ Architecture & Data Flow
+## 📌 What Problem Does It Solve?
+
+Checking warranty claims manually takes too much time, and basic computer models often make two big mistakes:
+1. **Extreme Scores:** Giving only 0% or 100% scores with nothing in between, missing tricky borderline cases.
+2. **Text Confusion:** Getting confused when long mechanic notes hide suspicious numbers.
+
+ClaimTrace fixes this by:
+* Using smooth probability calibration so scores reflect real risk (like 25%, 55%, or 85%).
+* Separating numbers and text properly so strange numbers are always caught.
+* Combining rules into one clear decision banner to avoid confusing messages.
+
+---
+
+## 🏗️ How It Works
+
+1. **User Input:** Enter claim details and mechanic logs in the Streamlit web dashboard.
+2. **FastAPI Backend:** Checks the inputs and runs the data through the machine learning pipeline.
+3. **Preprocessing:** Numbers are scaled, categories are encoded, and mechanic notes are turned into TF-IDF text features.
+4. **Dual Model Check:**
+   * **Supervised Model:** Estimates the exact fraud probability score.
+   * **Isolation Forest:** Scans numbers for weird or rare patterns.
+5. **Final Result:** Displays a clean verdict, risk tier, and score progress bar on the screen.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Frontend:** Streamlit (clean, interactive dashboard)
+* **Backend:** FastAPI + Uvicorn (fast REST API gateway)
+* **Machine Learning:** Scikit-Learn (Calibrated Logistic Regression & Isolation Forest)
+* **Data Processing:** Pandas, NumPy, and Joblib
+
+---
+
+## 📂 Project Structure
+
+```text
+ClaimTrace-Engine/
+├── models/
+│   ├── anomaly_model.joblib        # Outlier detection model
+│   ├── anomaly_threshold.joblib    # Cutoff threshold score
+│   ├── logistic_model.joblib       # Calibrated fraud classifier
+│   ├── preprocessor.joblib         # Combined data transformer
+│   └── scaler_num.joblib           # Numeric feature scaler
+├── app.py                          # Streamlit UI dashboard
+├── main.py                         # FastAPI backend server
+├── train.py                        # Model training script
+└── requirements.txt                # Required Python libraries
