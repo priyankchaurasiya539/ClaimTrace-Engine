@@ -15,11 +15,27 @@ def start_fastapi_server():
 
 start_fastapi_server()
 
+# 1. Page Configuration: Centered layout to avoid wide-screen stretching
 st.set_page_config(
     page_title="ClaimTrace Engine | Warranty Audit",
     page_icon="🛡️",
-    layout="wide",
+    layout="centered"
 )
+
+# 2. CSS restriction: Keeps entire app inside a neat container for clean screenshots
+st.markdown("""
+    <style>
+        .block-container {
+            max-width: 950px;
+            padding-top: 1.5rem;
+            padding-bottom: 2rem;
+        }
+        .stButton>button {
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 st.title("🛡️ ClaimTrace Engine")
 st.caption("Enterprise Industrial Warranty Fraud & Outlier Detection Pipeline")
@@ -50,20 +66,20 @@ with col_right:
         "Parts Replaced Count", min_value=1, value=1, step=1
     )
     mechanic_tenure_months = st.number_input(
-        "Mechanic Tenure (Months)", min_value=0, value=36, step=1
+        "Mechanic Experience (Months)", min_value=0, value=36, step=1
     )
     region = st.selectbox("Region", ["North", "South", "East", "West"])
     dealer_type = st.selectbox("Dealer Type", ["Authorized", "Third-Party"])
     part_category = st.selectbox(
         "Part Category",
-        ["Engine", "Transmission", "Electrical", "Body", "EV_Battery"],
+        ["Engine", "Transmission", "Electrical", "Body", "EV_Battery"]
     )
 
 st.subheader("📝 Mechanic Diagnostic Notes")
 mechanic_notes = st.text_area(
     "Enter shop-floor observation logs:",
     value="Routine scheduled maintenance. Replaced oil and filter. No abnormal wear.",
-    height=90,
+    height=90
 )
 
 st.markdown("---")
@@ -85,7 +101,7 @@ if analyze_clicked:
         "region": region,
         "dealer_type": dealer_type,
         "part_category": part_category,
-        "mechanic_notes": mechanic_notes,
+        "mechanic_notes": mechanic_notes
     }
 
     with st.spinner("Executing Harmonized Inference..."):
@@ -94,7 +110,7 @@ if analyze_clicked:
                 FASTAPI_URL,
                 json=payload,
                 timeout=10,
-                proxies={"http": None, "https": None},
+                proxies={"http": None, "https": None}
             )
 
             if response.status_code == 200:
@@ -129,9 +145,9 @@ if analyze_clicked:
                             ),
                             delta_color=(
                                 "inverse" if prob_pct >= 40 else "normal"
-                            ),
+                            )
                         )
-                        st.progress(max(0, min(100, int(prob_pct))))
+                        st.progress(max(0.0, min(1.0, float(result["fraud_probability"]))))
 
                 # Card 3: Isolation Engine
                 with c3:
